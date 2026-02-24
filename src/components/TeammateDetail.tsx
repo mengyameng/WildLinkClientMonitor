@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, Card, CardContent, IconButton, AppBar, Toolbar, Grid } from '@mui/material';
-import { ArrowBack, Warning } from '@mui/icons-material';
+import { Box, Typography, Card, CardContent, IconButton, AppBar, Toolbar, Grid, Button } from '@mui/material';
+import { ArrowBack, Warning, Map as MapIcon } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
 
 export default function TeammateDetail() {
@@ -30,22 +30,33 @@ export default function TeammateDetail() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
             队友详情
           </Typography>
+          <Button 
+            color="inherit" 
+            startIcon={<MapIcon />} 
+            onClick={() => navigate('/map')}
+          >
+            雷达地图
+          </Button>
         </Toolbar>
       </AppBar>
 
       <Box p={2} flexGrow={1}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h5" fontWeight="bold">
+            {teammate.name} (ID: {teammate.id})
+            {teammate.need_help === 1 && <Warning color="error" sx={{ ml: 1, verticalAlign: 'middle' }} />}
+          </Typography>
+          <Typography variant="caption" color="textSecondary">
+            更新于 {Math.floor((Date.now() - teammate.timestamp) / 60000)} 分钟前
+          </Typography>
+        </Box>
+
+        {/* 生命体征卡片 */}
         <Card sx={{ mb: 2, border: teammate.need_help ? '2px solid red' : 'none' }}>
           <CardContent>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h5" fontWeight="bold">
-                {teammate.name} (ID: {teammate.id})
-                {teammate.need_help === 1 && <Warning color="error" sx={{ ml: 1, verticalAlign: 'middle' }} />}
-              </Typography>
-              <Typography variant="caption" color="textSecondary">
-                更新于 {Math.floor((Date.now() - teammate.timestamp) / 60000)} 分钟前
-              </Typography>
-            </Box>
-
+            <Typography variant="h6" fontWeight="bold" mb={2}>
+              生命体征
+            </Typography>
             <Box display="flex" flexWrap="wrap" gap={2}>
               <Box width="calc(50% - 8px)">
                 <Typography variant="body2" color="textSecondary">心率</Typography>
@@ -80,10 +91,27 @@ export default function TeammateDetail() {
                   范围: {teammate.body_temp_min.toFixed(1)} - {teammate.body_temp_max.toFixed(1)}
                 </Typography>
               </Box>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* 环境数据卡片 */}
+        <Card sx={{ mb: 2, border: teammate.need_help ? '2px solid red' : 'none' }}>
+          <CardContent>
+            <Typography variant="h6" fontWeight="bold" mb={2}>
+              环境数据
+            </Typography>
+            <Box display="flex" flexWrap="wrap" gap={2}>
               <Box width="calc(50% - 8px)">
-                <Typography variant="body2" color="textSecondary">环境温度/湿度</Typography>
+                <Typography variant="body2" color="textSecondary">环境温度</Typography>
                 <Typography variant="h6" fontWeight="bold">
-                  {teammate.air_temp.toFixed(1)}℃ / {teammate.air_humidity}%
+                  {teammate.air_temp.toFixed(1)}℃
+                </Typography>
+              </Box>
+              <Box width="calc(50% - 8px)">
+                <Typography variant="body2" color="textSecondary">环境湿度</Typography>
+                <Typography variant="h6" fontWeight="bold">
+                  {teammate.air_humidity}%
                 </Typography>
               </Box>
               <Box width="100%">

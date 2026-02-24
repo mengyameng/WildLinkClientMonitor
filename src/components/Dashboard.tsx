@@ -100,46 +100,68 @@ export default function Dashboard() {
       )}
 
       {selfTelemetry ? (
-        <Card sx={{ mb: 3, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
-          <CardContent>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-              <Typography variant="h6" fontWeight="bold">
-                {selfTelemetry.name} (我自己)
+        <>
+          {/* 生命体征卡片 */}
+          <Card sx={{ mb: 2, bgcolor: 'primary.light', color: 'primary.contrastText' }}>
+            <CardContent>
+              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                <Typography variant="h6" fontWeight="bold">
+                  {selfTelemetry.name} (我自己) - 生命体征
+                </Typography>
+                <IconButton color="inherit" onClick={() => {
+                  setEditingConfig({
+                    heart_rate_min: selfTelemetry.heart_rate_min,
+                    heart_rate_max: selfTelemetry.heart_rate_max,
+                    blood_oxygen_low: selfTelemetry.blood_oxygen_low,
+                    body_temp_min: selfTelemetry.body_temp_min,
+                    body_temp_max: selfTelemetry.body_temp_max,
+                  });
+                  setConfigOpen(true);
+                }}>
+                  <Settings />
+                </IconButton>
+              </Box>
+              
+              <Box display="flex" flexWrap="wrap" gap={2}>
+                <Box width="calc(50% - 8px)">
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>心率</Typography>
+                  <Typography variant="h4" fontWeight="bold">{selfTelemetry.heart_rate} bpm</Typography>
+                </Box>
+                <Box width="calc(50% - 8px)">
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>血氧</Typography>
+                  <Typography variant="h4" fontWeight="bold">{selfTelemetry.blood_oxygen}%</Typography>
+                </Box>
+                <Box width="calc(50% - 8px)">
+                  <Typography variant="body2" sx={{ opacity: 0.8 }}>体温</Typography>
+                  <Typography variant="h4" fontWeight="bold">{selfTelemetry.body_temp.toFixed(1)}℃</Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+
+          {/* 环境数据卡片 */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <Typography variant="h6" fontWeight="bold" mb={2}>
+                环境数据
               </Typography>
-              <IconButton color="inherit" onClick={() => {
-                setEditingConfig({
-                  heart_rate_min: selfTelemetry.heart_rate_min,
-                  heart_rate_max: selfTelemetry.heart_rate_max,
-                  blood_oxygen_low: selfTelemetry.blood_oxygen_low,
-                  body_temp_min: selfTelemetry.body_temp_min,
-                  body_temp_max: selfTelemetry.body_temp_max,
-                });
-                setConfigOpen(true);
-              }}>
-                <Settings />
-              </IconButton>
-            </Box>
-            
-            <Box display="flex" flexWrap="wrap" gap={2}>
-              <Box width="calc(50% - 8px)">
-                <Typography variant="body2" sx={{ opacity: 0.8 }}>心率</Typography>
-                <Typography variant="h4" fontWeight="bold">{selfTelemetry.heart_rate} bpm</Typography>
+              <Box display="flex" flexWrap="wrap" gap={2}>
+                <Box width="calc(50% - 8px)">
+                  <Typography variant="body2" color="textSecondary">环境温度</Typography>
+                  <Typography variant="h5" fontWeight="bold">{selfTelemetry.air_temp.toFixed(1)}℃</Typography>
+                </Box>
+                <Box width="calc(50% - 8px)">
+                  <Typography variant="body2" color="textSecondary">环境湿度</Typography>
+                  <Typography variant="h5" fontWeight="bold">{selfTelemetry.air_humidity}%</Typography>
+                </Box>
+                <Box width="100%">
+                  <Typography variant="body2" color="textSecondary">环境气压</Typography>
+                  <Typography variant="h5" fontWeight="bold">{selfTelemetry.air_pressure.toFixed(1)} hPa</Typography>
+                </Box>
               </Box>
-              <Box width="calc(50% - 8px)">
-                <Typography variant="body2" sx={{ opacity: 0.8 }}>血氧</Typography>
-                <Typography variant="h4" fontWeight="bold">{selfTelemetry.blood_oxygen}%</Typography>
-              </Box>
-              <Box width="calc(50% - 8px)">
-                <Typography variant="body2" sx={{ opacity: 0.8 }}>体温</Typography>
-                <Typography variant="h4" fontWeight="bold">{selfTelemetry.body_temp.toFixed(1)}℃</Typography>
-              </Box>
-              <Box width="calc(50% - 8px)">
-                <Typography variant="body2" sx={{ opacity: 0.8 }}>环境温度/湿度</Typography>
-                <Typography variant="h6" fontWeight="bold">{selfTelemetry.air_temp.toFixed(1)}℃ / {selfTelemetry.air_humidity}%</Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </>
       ) : (
         <Card sx={{ mb: 3 }}>
           <CardContent>
@@ -207,31 +229,31 @@ export default function Dashboard() {
             <TextField 
               label="心率下限" 
               type="number" 
-              value={editingConfig.heart_rate_min || ''} 
+              value={editingConfig.heart_rate_min ?? 0} 
               onChange={e => setEditingConfig({...editingConfig, heart_rate_min: Number(e.target.value)})}
             />
             <TextField 
               label="心率上限" 
               type="number" 
-              value={editingConfig.heart_rate_max || ''} 
+              value={editingConfig.heart_rate_max ?? 0} 
               onChange={e => setEditingConfig({...editingConfig, heart_rate_max: Number(e.target.value)})}
             />
             <TextField 
               label="血氧下限" 
               type="number" 
-              value={editingConfig.blood_oxygen_low || ''} 
+              value={editingConfig.blood_oxygen_low ?? 0} 
               onChange={e => setEditingConfig({...editingConfig, blood_oxygen_low: Number(e.target.value)})}
             />
             <TextField 
               label="体温下限" 
               type="number" 
-              value={editingConfig.body_temp_min || ''} 
+              value={editingConfig.body_temp_min ?? 0} 
               onChange={e => setEditingConfig({...editingConfig, body_temp_min: Number(e.target.value)})}
             />
             <TextField 
               label="体温上限" 
               type="number" 
-              value={editingConfig.body_temp_max || ''} 
+              value={editingConfig.body_temp_max ?? 0} 
               onChange={e => setEditingConfig({...editingConfig, body_temp_max: Number(e.target.value)})}
             />
           </Box>

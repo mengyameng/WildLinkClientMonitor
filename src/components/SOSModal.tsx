@@ -1,11 +1,13 @@
-import React, { useEffect, useRef } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Typography, Box, CircularProgress } from '@mui/material';
 import { Warning } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
+import { writeConfig } from '../services/bluetooth';
 
 export default function SOSModal() {
   const { sosActive, sosSourceId, clearSos, telemetryPool, activeDeviceId, connections } = useAppStore();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
 
   const activeConnection = activeDeviceId ? connections[activeDeviceId] : null;
   const isSelf = activeConnection && sosSourceId === activeConnection.self_id;
@@ -34,6 +36,25 @@ export default function SOSModal() {
     clearSos();
   };
 
+  const handleClearSelfSos = async () => {
+    if (!activeConnection || !activeDeviceId) return;
+    const selfTelemetry = telemetryPool[activeConnection.self_id!];
+    if (selfTelemetry) {
+      setIsClearing(true);
+      try {
+        const newTelemetry = { ...selfTelemetry, need_help: 0 };
+        await writeConfig(activeDeviceId, newTelemetry);
+        clearSos();
+      } catch (e) {
+        console.error("Failed to clear SOS:", e);
+      } finally {
+        setIsClearing(false);
+      }
+    } else {
+      clearSos();
+    }
+  };
+
   if (!sosActive) return null;
 
   if (isSelf) {
@@ -46,7 +67,14 @@ export default function SOSModal() {
       }}>
         <Warning sx={{ mr: 1 }} />
         <Typography variant="h6" fontWeight="bold">SOS 已触发 (我自己)</Typography>
-        <Button color="inherit" onClick={clearSos} sx={{ ml: 2, border: '1px solid white' }}>关闭提示</Button>
+        <Button 
+          color="inherit" 
+          onClick={handleClearSelfSos} 
+          disabled={isClearing}
+          sx={{ ml: 2, border: '1px solid white' }}
+        >
+          {isClearing ? <CircularProgress size={24} color="inherit" /> : '关闭提示'}
+        </Button>
       </Box>
     );
   }
