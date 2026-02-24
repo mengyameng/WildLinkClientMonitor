@@ -103,49 +103,19 @@ export default function SOSModal()
       <Box sx={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999,
         bgcolor: 'error.main', color: 'error.contrastText', p: 2,
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        display: 'flex', justifyContent: 'center', alignItems: 'center',
         boxShadow: 3
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <Warning sx={{ mr: 1 }} />
-          <Typography variant="h6" fontWeight="bold">SOS 已触发 (我自己)</Typography>
-          <Button
-            color="inherit"
-            onClick={handleClearSelfSos}
-            disabled={isClearing}
-            sx={{ ml: 2, border: '1px solid white' }}
-          >
-            {isClearing ? <CircularProgress size={24} color="inherit" /> : '关闭提示'}
-          </Button>
-        </Box>
-
-        {/* Cooldown Settings for Self SOS */}
-        <Box sx={{ mt: 2, width: '90%', maxWidth: 400 }}>
-          <Typography variant="body1" mb={1}>
-            冷却时间设置: {cooldownDuration}秒
-          </Typography>
-          <Slider
-            value={cooldownDuration}
-            onChange={handleCooldownChange}
-            min={1}
-            max={60}
-            step={1}
-            valueLabelDisplay="auto"
-            valueLabelFormat={(value) => `${value}s`}
-            sx={{
-              color: 'white',
-              '& .MuiSlider-thumb': {
-                bgcolor: 'white',
-              },
-              '& .MuiSlider-track': {
-                bgcolor: 'white',
-              },
-              '& .MuiSlider-rail': {
-                bgcolor: 'rgba(255, 255, 255, 0.5)',
-              },
-            }}
-          />
-        </Box>
+        <Warning sx={{ mr: 1 }} />
+        <Typography variant="h6" fontWeight="bold">SOS 已触发 (我自己)</Typography>
+        <Button
+          color="inherit"
+          onClick={handleClearSelfSos}
+          disabled={isClearing}
+          sx={{ ml: 2, border: '1px solid white' }}
+        >
+          {isClearing ? <CircularProgress size={24} color="inherit" /> : '关闭提示'}
+        </Button>
       </Box>
     );
   }
