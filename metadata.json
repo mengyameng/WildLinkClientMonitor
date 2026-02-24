@@ -1,0 +1,5 @@
+{
+  "name": "星闪与 LoRa 户外探险应急监测系统",
+  "description": "基于 Web Bluetooth API 连接 WlidLinkClient 蓝牙监测节点，实时解析二进制遥测数据并提供雷达地图、SOS 报警等功能。",
+  "requestFramePermissions": ["geolocation", "bluetooth"]
+}
