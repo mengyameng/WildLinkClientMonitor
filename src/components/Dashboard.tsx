@@ -48,12 +48,35 @@ export default function Dashboard() {
 
   const handleSaveConfig = async () => {
     if (!selfTelemetry || !activeConnection) return;
+    
+    if (editingConfig.name !== undefined && editingConfig.name.trim() === '') {
+      toast.error("名称不能为空");
+      return;
+    }
+
     const newTelemetry = { ...selfTelemetry, ...editingConfig };
     if (currentGps) {
       newTelemetry.gps = currentGps;
     }
     await writeConfig(activeConnection.deviceId, newTelemetry);
     setConfigOpen(false);
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let val = e.target.value;
+    // Filter non-ASCII characters
+    const asciiVal = val.replace(/[^\x00-\x7F]/g, '');
+    
+    if (asciiVal !== val) {
+      toast.error("仅允许输入英文字符或数字");
+    }
+
+    if (asciiVal.length > 9) {
+      toast.error("名称过长，已自动截断");
+      setEditingConfig({ ...editingConfig, name: asciiVal.substring(0, 9) });
+    } else {
+      setEditingConfig({ ...editingConfig, name: asciiVal });
+    }
   };
 
   // Auto-inject GPS every 10s if we have a connection
@@ -110,6 +133,7 @@ export default function Dashboard() {
                 </Typography>
                 <IconButton color="inherit" onClick={() => {
                   setEditingConfig({
+                    name: selfTelemetry.name,
                     heart_rate_min: selfTelemetry.heart_rate_min,
                     heart_rate_max: selfTelemetry.heart_rate_max,
                     blood_oxygen_low: selfTelemetry.blood_oxygen_low,
@@ -223,39 +247,57 @@ export default function Dashboard() {
 
       {/* Config Dialog */}
       <Dialog open={configOpen} onClose={() => setConfigOpen(false)} fullWidth>
-        <DialogTitle>配置报警阈值</DialogTitle>
+        <DialogTitle>设备配置</DialogTitle>
         <DialogContent>
-          <Box display="flex" flexDirection="column" gap={2} mt={1}>
-            <TextField 
-              label="心率下限" 
-              type="number" 
-              value={editingConfig.heart_rate_min ?? 0} 
-              onChange={e => setEditingConfig({...editingConfig, heart_rate_min: Number(e.target.value)})}
-            />
-            <TextField 
-              label="心率上限" 
-              type="number" 
-              value={editingConfig.heart_rate_max ?? 0} 
-              onChange={e => setEditingConfig({...editingConfig, heart_rate_max: Number(e.target.value)})}
-            />
-            <TextField 
-              label="血氧下限" 
-              type="number" 
-              value={editingConfig.blood_oxygen_low ?? 0} 
-              onChange={e => setEditingConfig({...editingConfig, blood_oxygen_low: Number(e.target.value)})}
-            />
-            <TextField 
-              label="体温下限" 
-              type="number" 
-              value={editingConfig.body_temp_min ?? 0} 
-              onChange={e => setEditingConfig({...editingConfig, body_temp_min: Number(e.target.value)})}
-            />
-            <TextField 
-              label="体温上限" 
-              type="number" 
-              value={editingConfig.body_temp_max ?? 0} 
-              onChange={e => setEditingConfig({...editingConfig, body_temp_max: Number(e.target.value)})}
-            />
+          <Box display="flex" flexDirection="column" gap={3} mt={1}>
+            {/* 配置名称 */}
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" mb={1}>配置名称</Typography>
+              <TextField 
+                fullWidth
+                label="设备名称 (最多9个英文字符)" 
+                value={editingConfig.name || ''} 
+                onChange={handleNameChange}
+                helperText="仅支持英文字母、数字及基础符号"
+              />
+            </Box>
+
+            {/* 配置报警阈值 */}
+            <Box>
+              <Typography variant="subtitle2" color="textSecondary" mb={1}>配置报警阈值</Typography>
+              <Box display="flex" flexDirection="column" gap={2}>
+                <TextField 
+                  label="心率下限" 
+                  type="number" 
+                  value={editingConfig.heart_rate_min ?? 0} 
+                  onChange={e => setEditingConfig({...editingConfig, heart_rate_min: Number(e.target.value)})}
+                />
+                <TextField 
+                  label="心率上限" 
+                  type="number" 
+                  value={editingConfig.heart_rate_max ?? 0} 
+                  onChange={e => setEditingConfig({...editingConfig, heart_rate_max: Number(e.target.value)})}
+                />
+                <TextField 
+                  label="血氧下限" 
+                  type="number" 
+                  value={editingConfig.blood_oxygen_low ?? 0} 
+                  onChange={e => setEditingConfig({...editingConfig, blood_oxygen_low: Number(e.target.value)})}
+                />
+                <TextField 
+                  label="体温下限" 
+                  type="number" 
+                  value={editingConfig.body_temp_min ?? 0} 
+                  onChange={e => setEditingConfig({...editingConfig, body_temp_min: Number(e.target.value)})}
+                />
+                <TextField 
+                  label="体温上限" 
+                  type="number" 
+                  value={editingConfig.body_temp_max ?? 0} 
+                  onChange={e => setEditingConfig({...editingConfig, body_temp_max: Number(e.target.value)})}
+                />
+              </Box>
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
