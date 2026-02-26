@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import
-{
-  Box, Typography, Card, CardContent, Button,
-  Select, MenuItem, FormControl, InputLabel,
-  Grid, IconButton, Dialog, DialogTitle, DialogContent,
-  DialogActions, TextField
-} from '@mui/material';
+  {
+    Box, Typography, Card, CardContent, Button,
+    Select, MenuItem, FormControl, InputLabel,
+    Grid, IconButton, Dialog, DialogTitle, DialogContent,
+    DialogActions, TextField
+  } from '@mui/material';
 import { Settings, Warning, Map as MapIcon, Bluetooth, Refresh } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
 import { connectDevice, writeConfig } from '../services/bluetooth';
@@ -19,11 +19,13 @@ export default function Dashboard()
   const { connections, activeDeviceId, setActiveDevice, telemetryPool, currentGps, setCurrentGps } = useAppStore();
   const [configOpen, setConfigOpen] = useState(false);
   const [editingConfig, setEditingConfig] = useState<Partial<NodeTelemetry>>({});
-  const [gpsIntervalId, setGpsIntervalId] = useState<NodeJS.Timeout | null>(null);
+
+  // 核心修改1：用useRef存储watchId（消除state更新触发的re-render）
+  const gpsWatchIdRef = useRef<number | null>(null);
+  const lastUpdateTime = useRef<number>(0);
 
   const activeConnection = activeDeviceId ? connections[activeDeviceId] : null;
   const selfTelemetry = activeConnection ? telemetryPool[activeConnection.self_id!] : null;
-
   const teammates = Object.values(telemetryPool).filter(t => t.id !== activeConnection?.self_id);
 
   const handleConnect = async () =>
@@ -36,44 +38,50 @@ export default function Dashboard()
       {
         new AudioContext().resume();
       }
-      await connectDevice();
 
-      // Start GPS updates after successful connection
+      // Start GPS updates (同步手势中调用，符合浏览器策略)
       if (navigator.geolocation)
       {
-        const updateGps = () =>
+        // 清理已有监听（操作ref，无re-render）
+        if (gpsWatchIdRef.current !== null)
         {
-          navigator.geolocation.getCurrentPosition(
-            (position) =>
+          navigator.geolocation.clearWatch(gpsWatchIdRef.current);
+          gpsWatchIdRef.current = null;
+        }
+        lastUpdateTime.current = 0;
+
+        // 创建watchPosition（同步手势内，无违规）
+        const watchId = navigator.geolocation.watchPosition(
+          (position) =>
+          {
+            const now = Date.now();
+            // 仅每10秒更新一次GPS（和你原逻辑一致）
+            if (now - lastUpdateTime.current >= 10000)
             {
               setCurrentGps({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
               });
-              // toast.success("GPS 位置更新, position: " + position.coords.latitude + ", " + position.coords.longitude);
-            },
-            (error) =>
-            {
-              console.error("GPS error:", error);
-            },
-            { enableHighAccuracy: true }
-          );
-        };
-
-        // Clear any existing interval
-        if (gpsIntervalId)
-        {
-          clearInterval(gpsIntervalId);
-        }
-
-        // Update immediately and set interval
-        updateGps();
-        const intervalId = setInterval(updateGps, 10000);
-        setGpsIntervalId(intervalId);
+              lastUpdateTime.current = now;
+              // 可选：打开注释查看GPS更新日志
+              // console.log("GPS更新：", position.coords.latitude, position.coords.longitude);
+            }
+          },
+          (error) =>
+          {
+            console.error("GPS error:", error);
+          },
+          { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+        );
+        // 仅更新ref，不触发组件重渲染 → 消除窗口期
+        gpsWatchIdRef.current = watchId;
       }
+
+      await connectDevice();
+
     } catch (e)
     {
-      console.error(e);
+      console.error("连接设备失败：", e);
     }
   };
 
@@ -129,7 +137,7 @@ export default function Dashboard()
     }
   };
 
-  // Auto-inject GPS every 10s if we have a connection
+  // Auto-inject GPS every 10s if we have a connection（原有逻辑不变）
   useEffect(() =>
   {
     if (!activeConnection || !selfTelemetry || !currentGps) return;
@@ -143,17 +151,32 @@ export default function Dashboard()
     return () => clearInterval(intervalId);
   }, [activeConnection, selfTelemetry, currentGps]);
 
-  // Clean up GPS interval when no devices are connected
+  // 核心修改2：清理逻辑1 - 仅监听connections变化（无窗口期）
   useEffect(() =>
   {
     const hasConnections = Object.keys(connections).length > 0;
-    if (!hasConnections && gpsIntervalId)
+    // 仅当“无设备 + 有watchId”时清理
+    if (!hasConnections && gpsWatchIdRef.current !== null)
     {
-      clearInterval(gpsIntervalId);
-      setGpsIntervalId(null);
+      navigator.geolocation.clearWatch(gpsWatchIdRef.current);
+      gpsWatchIdRef.current = null;
     }
-  }, [connections, gpsIntervalId]);
+  }, [connections]); // 仅依赖connections，无watchId → 无窗口期
 
+  // 核心修改3：清理逻辑2 - 组件卸载时强制清理（防止内存泄漏）
+  useEffect(() =>
+  {
+    return () =>
+    {
+      if (gpsWatchIdRef.current !== null)
+      {
+        navigator.geolocation.clearWatch(gpsWatchIdRef.current);
+        gpsWatchIdRef.current = null;
+      }
+    };
+  }, []); // 空依赖，仅卸载时执行
+
+  // 原有UI结构完全保留
   return (
     <Box sx={{ p: 2, pb: 10, maxWidth: '600px', mx: 'auto' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
