@@ -143,18 +143,6 @@ export default function Dashboard()
     return () => clearInterval(intervalId);
   }, [activeConnection, selfTelemetry, currentGps]);
 
-  // Clean up GPS interval on component unmount
-  useEffect(() =>
-  {
-    return () =>
-    {
-      if (gpsIntervalId)
-      {
-        clearInterval(gpsIntervalId);
-      }
-    };
-  }, [gpsIntervalId]);
-
   // Clean up GPS interval when no devices are connected
   useEffect(() =>
   {
