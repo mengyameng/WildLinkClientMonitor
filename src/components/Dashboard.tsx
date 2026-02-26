@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import
-  {
-    Box, Typography, Card, CardContent, Button,
-    Select, MenuItem, FormControl, InputLabel,
-    Grid, IconButton, Dialog, DialogTitle, DialogContent,
-    DialogActions, TextField
-  } from '@mui/material';
+{
+  Box, Typography, Card, CardContent, Button,
+  Select, MenuItem, FormControl, InputLabel,
+  Grid, IconButton, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField
+} from '@mui/material';
 import { Settings, Warning, Map as MapIcon, Bluetooth, Refresh } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
 import { connectDevice, writeConfig } from '../services/bluetooth';
@@ -140,7 +140,22 @@ export default function Dashboard()
   // Auto-inject GPS every 10s if we have a connection（原有逻辑不变）
   useEffect(() =>
   {
-    if (!activeConnection || !selfTelemetry || !currentGps) return;
+    if (!activeConnection || !selfTelemetry || !currentGps)
+    {
+      console.log('GPS auto-inject skipped:', {
+        activeConnection: !!activeConnection,
+        selfTelemetry: !!selfTelemetry,
+        currentGps: !!currentGps
+      });
+      return;
+    }
+    else
+    {
+      console.log('GPS auto-inject triggered:', { activeConnection, selfTelemetry, currentGps });
+      console.log("activeConnection 变了吗?", activeConnection?.deviceId);
+      console.log("selfTelemetry 变了吗?", selfTelemetry?.id, selfTelemetry?.timestamp);
+      console.log("currentGps 变了吗?", currentGps?.latitude, currentGps?.longitude);
+    }
 
     const intervalId = setInterval(() =>
     {
