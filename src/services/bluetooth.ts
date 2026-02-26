@@ -8,7 +8,8 @@ export async function connectDevice()
   try
   {
     const device = await navigator.bluetooth.requestDevice({
-      filters: [{ namePrefix: DEVICE_NAME_FILTER }],
+      // filters: [{ namePrefix: DEVICE_NAME_FILTER }],
+      acceptAllDevices: true,
       optionalServices: [SERVICE_UUID]
     });
 
