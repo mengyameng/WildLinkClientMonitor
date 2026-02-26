@@ -64,7 +64,7 @@ export default function Dashboard()
               });
               lastUpdateTime.current = now;
               // 可选：打开注释查看GPS更新日志
-              // console.log("GPS更新：", position.coords.latitude, position.coords.longitude);
+              console.log("GPS更新：", position.coords.latitude, position.coords.longitude);
             }
           },
           (error) =>
