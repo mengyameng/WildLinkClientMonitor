@@ -4,14 +4,16 @@ import { Box, Typography, Card, CardContent, IconButton, AppBar, Toolbar, Grid, 
 import { ArrowBack, Warning, Map as MapIcon } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
 
-export default function TeammateDetail() {
+export default function TeammateDetail()
+{
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { telemetryPool } = useAppStore();
-  
+
   const teammate = telemetryPool[Number(id)];
 
-  if (!teammate) {
+  if (!teammate)
+  {
     return (
       <Box p={2}>
         <Typography>未找到队友数据</Typography>
@@ -30,12 +32,12 @@ export default function TeammateDetail() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
             队友详情
           </Typography>
-          <Button 
-            color="inherit" 
-            startIcon={<MapIcon />} 
+          <Button
+            color="inherit"
+            startIcon={<MapIcon />}
             onClick={() => navigate('/map')}
           >
-            雷达地图
+            查看地图
           </Button>
         </Toolbar>
       </AppBar>

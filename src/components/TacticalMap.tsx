@@ -6,25 +6,28 @@ import { ArrowBack } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
 import 'leaflet/dist/leaflet.css';
 
-function MapUpdater({ center }: { center: [number, number] }) {
+function MapUpdater({ center }: { center: [number, number] })
+{
   const map = useMap();
-  useEffect(() => {
+  useEffect(() =>
+  {
     map.setView(center, map.getZoom());
   }, [center, map]);
   return null;
 }
 
-export default function TacticalMap() {
+export default function TacticalMap()
+{
   const navigate = useNavigate();
   const { connections, activeDeviceId, telemetryPool, currentGps } = useAppStore();
-  
+
   const activeConnection = activeDeviceId ? connections[activeDeviceId] : null;
   const selfTelemetry = activeConnection ? telemetryPool[activeConnection.self_id!] : null;
   const teammates = Object.values(telemetryPool).filter(t => t.id !== activeConnection?.self_id);
 
   const defaultCenter: [number, number] = [39.9042, 116.4074]; // Beijing
-  const center: [number, number] = selfTelemetry?.gps?.latitude && selfTelemetry?.gps?.longitude 
-    ? [selfTelemetry.gps.latitude, selfTelemetry.gps.longitude] 
+  const center: [number, number] = selfTelemetry?.gps?.latitude && selfTelemetry?.gps?.longitude
+    ? [selfTelemetry.gps.latitude, selfTelemetry.gps.longitude]
     : (currentGps ? [currentGps.latitude, currentGps.longitude] : defaultCenter);
 
   return (
@@ -35,7 +38,7 @@ export default function TacticalMap() {
             <ArrowBack />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-            雷达地图
+            附近队友
           </Typography>
         </Toolbar>
       </AppBar>
@@ -50,14 +53,14 @@ export default function TacticalMap() {
 
           {/* Self Marker */}
           {selfTelemetry && selfTelemetry.gps.latitude !== 0 && (
-            <CircleMarker 
-              center={[selfTelemetry.gps.latitude, selfTelemetry.gps.longitude]} 
-              radius={8} 
+            <CircleMarker
+              center={[selfTelemetry.gps.latitude, selfTelemetry.gps.longitude]}
+              radius={8}
               pathOptions={{ color: '#4CAF50', fillColor: '#4CAF50', fillOpacity: 1 }}
             >
               <Tooltip permanent direction="top" offset={[0, -10]}>
                 <Typography variant="caption" fontWeight="bold">我 ({selfTelemetry.name})</Typography>
-                <br/>
+                <br />
                 <Typography variant="caption">{selfTelemetry.gps.latitude.toFixed(4)}, {selfTelemetry.gps.longitude.toFixed(4)}</Typography>
               </Tooltip>
             </CircleMarker>
@@ -66,13 +69,13 @@ export default function TacticalMap() {
           {/* Teammate Markers */}
           {teammates.map(t => (
             t.gps.latitude !== 0 && (
-              <CircleMarker 
+              <CircleMarker
                 key={t.id}
-                center={[t.gps.latitude, t.gps.longitude]} 
-                radius={t.need_help ? 12 : 8} 
-                pathOptions={{ 
-                  color: t.need_help ? '#F44336' : '#2196F3', 
-                  fillColor: t.need_help ? '#F44336' : '#2196F3', 
+                center={[t.gps.latitude, t.gps.longitude]}
+                radius={t.need_help ? 12 : 8}
+                pathOptions={{
+                  color: t.need_help ? '#F44336' : '#2196F3',
+                  fillColor: t.need_help ? '#F44336' : '#2196F3',
                   fillOpacity: t.need_help ? 0.8 : 1,
                   className: t.need_help ? 'sos-marker' : ''
                 }}
@@ -84,7 +87,7 @@ export default function TacticalMap() {
                   <Typography variant="caption" fontWeight="bold" color={t.need_help ? 'error' : 'inherit'}>
                     {t.name} {t.need_help ? '(SOS)' : ''}
                   </Typography>
-                  <br/>
+                  <br />
                   <Typography variant="caption">{t.gps.latitude.toFixed(4)}, {t.gps.longitude.toFixed(4)}</Typography>
                 </Tooltip>
               </CircleMarker>
