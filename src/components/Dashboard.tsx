@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import
-  {
-    Box, Typography, Card, CardContent, Button,
-    Select, MenuItem, FormControl, InputLabel,
-    Grid, IconButton, Dialog, DialogTitle, DialogContent,
-    DialogActions, TextField
-  } from '@mui/material';
+{
+  Box, Typography, Card, CardContent, Button,
+  Select, MenuItem, FormControl, InputLabel,
+  Grid, IconButton, Dialog, DialogTitle, DialogContent,
+  DialogActions, TextField
+} from '@mui/material';
 import { Settings, Warning, Map as MapIcon, Bluetooth, Refresh } from '@mui/icons-material';
 import { useAppStore } from '../store/useAppStore';
 import { connectDevice, writeConfig } from '../services/bluetooth';
@@ -256,7 +256,7 @@ export default function Dashboard()
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <Typography variant="h6" fontWeight="bold">
-                  {selfTelemetry.name} (我自己) - 生命体征
+                  {selfTelemetry.name} (我) - 生命体征
                 </Typography>
                 <IconButton color="inherit" onClick={() =>
                 {

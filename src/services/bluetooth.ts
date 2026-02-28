@@ -105,7 +105,7 @@ export async function writeConfig(deviceId: string, telemetry: NodeTelemetry)
   {
     const buffer = serializeTelemetry(telemetry);
     await conn.characteristicB.writeValue(buffer);
-    toast.success("配置已发送");
+    console.log("配置已发送");
   } catch (error)
   {
     console.error(error);

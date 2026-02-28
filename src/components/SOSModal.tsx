@@ -107,14 +107,14 @@ export default function SOSModal()
         boxShadow: 3
       }}>
         <Warning sx={{ mr: 1 }} />
-        <Typography variant="h6" fontWeight="bold">SOS 已触发 (我自己)</Typography>
+        <Typography variant="h6" fontWeight="bold">SOS已触发</Typography>
         <Button
           color="inherit"
           onClick={handleClearSelfSos}
           disabled={isClearing}
           sx={{ ml: 2, border: '1px solid white' }}
         >
-          {isClearing ? <CircularProgress size={24} color="inherit" /> : '关闭提示'}
+          {isClearing ? <CircularProgress size={24} color="inherit" /> : '关闭S0S'}
         </Button>
       </Box>
     );

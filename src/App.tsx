@@ -10,8 +10,6 @@ import SOSModal from './components/SOSModal';
 
 export default function App()
 {
-
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
