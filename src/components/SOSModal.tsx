@@ -147,7 +147,7 @@ export default function SOSModal()
           队友 {sourceName} 发出求救信号！
         </Typography>
         <Typography variant="h6" mb={6}>
-          请立即查看雷达地图确认其位置。
+          请立即查看地图确认其位置。
         </Typography>
 
         {/* Cooldown Settings */}
