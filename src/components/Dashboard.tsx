@@ -310,6 +310,40 @@ export default function Dashboard()
                   <Typography variant="body2" color="textSecondary">环境气压</Typography>
                   <Typography variant="h5" fontWeight="bold">{selfTelemetry.air_pressure.toFixed(1)} hPa</Typography>
                 </Box>
+                <Box width="100%" sx={{ mt: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1, backgroundColor: '#f5f5f5' }}>
+                  <Typography variant="body2" color="textSecondary">环境风险预警</Typography>
+                  <Typography variant="h6" fontWeight="bold" sx={{ mt: 1 }}>
+                    {(() =>
+                    {
+                      const temp = selfTelemetry.air_temp;
+                      const humidity = selfTelemetry.air_humidity;
+                      const pressure = selfTelemetry.air_pressure;
+
+                      if (pressure < 1000 && humidity > 90)
+                      {
+                        return '⚠️ 降雨风险';
+                      } else if (temp >= 33 && humidity >= 60)
+                      {
+                        return '⚠️ 闷热易中暑';
+                      } else if (temp >= 35 && humidity >= 70)
+                      {
+                        return '⚠️ 高温高湿';
+                      } else if (temp <= 0)
+                      {
+                        return '⚠️ 低温风险';
+                      } else if (temp <= -5)
+                      {
+                        return '⚠️ 易冻伤';
+                      } else if (humidity >= 95 && temp <= 15)
+                      {
+                        return '⚠️ 大雾/低能见度';
+                      } else
+                      {
+                        return '✅ 环境风险：无';
+                      }
+                    })()}
+                  </Typography>
+                </Box>
               </Box>
             </CardContent>
           </Card>
