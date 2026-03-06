@@ -88,8 +88,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     const state = get();
     const now = Date.now();
 
-    // Check if cooldown is active
-    if (state.sosCooldown && state.cooldownEndTime && now < state.cooldownEndTime)
+    // Check if the device is self
+    const isSelfDevice = Object.values(state.connections).some(conn => conn.self_id === sourceId);
+
+    // Check if cooldown is active (only apply to non-self devices)
+    if (!isSelfDevice && state.sosCooldown && state.cooldownEndTime && now < state.cooldownEndTime)
     {
       return;
     }
