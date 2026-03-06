@@ -20,7 +20,7 @@ export default function SOSModal()
     {
       if (!audioRef.current)
       {
-        audioRef.current = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
+        audioRef.current = new Audio('/sounds/morse_sos.mp3');
         audioRef.current.loop = true;
       }
       audioRef.current.play().catch(e => console.error("Audio play failed:", e));
