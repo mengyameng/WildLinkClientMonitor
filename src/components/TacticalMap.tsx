@@ -32,7 +32,7 @@ export default function TacticalMap()
 
   return (
     <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar position="static" color="inherit" elevation={1}>
+      <AppBar position="fixed" color="inherit" elevation={1}>
         <Toolbar>
           <IconButton edge="start" onClick={() => navigate(-1)} sx={{ mr: 2 }}>
             <ArrowBack />
@@ -43,7 +43,7 @@ export default function TacticalMap()
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ flexGrow: 1, position: 'relative' }}>
+      <Box sx={{ flexGrow: 1, position: 'relative', mt: { xs: '56px', sm: '64px' } }}>
         <MapContainer center={center} zoom={15} style={{ height: '100%', width: '100%' }}>
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
