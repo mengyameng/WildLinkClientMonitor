@@ -277,15 +277,15 @@ export default function Dashboard()
               <Box display="flex" flexWrap="wrap" gap={2}>
                 <Box width="calc(50% - 8px)">
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>心率</Typography>
-                  <Typography variant="h4" fontWeight="bold">{selfTelemetry.heart_rate} bpm</Typography>
+                  <Typography variant="h5" fontWeight="bold">{selfTelemetry.heart_rate} bpm</Typography>
                 </Box>
                 <Box width="calc(50% - 8px)">
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>血氧</Typography>
-                  <Typography variant="h4" fontWeight="bold">{selfTelemetry.blood_oxygen}%</Typography>
+                  <Typography variant="h5" fontWeight="bold">{selfTelemetry.blood_oxygen}%</Typography>
                 </Box>
                 <Box width="calc(50% - 8px)">
                   <Typography variant="body2" sx={{ opacity: 0.8 }}>体温</Typography>
-                  <Typography variant="h4" fontWeight="bold">{selfTelemetry.body_temp.toFixed(1)}℃</Typography>
+                  <Typography variant="h5" fontWeight="bold">{selfTelemetry.body_temp.toFixed(1)}℃</Typography>
                 </Box>
               </Box>
             </CardContent>
@@ -429,31 +429,31 @@ export default function Dashboard()
               <Typography variant="subtitle2" color="textSecondary" mb={1}>配置报警阈值</Typography>
               <Box display="flex" flexDirection="column" gap={2}>
                 <TextField
-                  label="心率下限"
+                  label="心率下限（bpm）"
                   type="number"
                   value={editingConfig.heart_rate_min ?? 0}
                   onChange={e => setEditingConfig({ ...editingConfig, heart_rate_min: Number(e.target.value) })}
                 />
                 <TextField
-                  label="心率上限"
+                  label="心率上限（bpm）"
                   type="number"
                   value={editingConfig.heart_rate_max ?? 0}
                   onChange={e => setEditingConfig({ ...editingConfig, heart_rate_max: Number(e.target.value) })}
                 />
                 <TextField
-                  label="血氧下限"
+                  label="血氧下限（%）"
                   type="number"
                   value={editingConfig.blood_oxygen_low ?? 0}
                   onChange={e => setEditingConfig({ ...editingConfig, blood_oxygen_low: Number(e.target.value) })}
                 />
                 <TextField
-                  label="体温下限"
+                  label="体温下限（℃）"
                   type="number"
                   value={editingConfig.body_temp_min ?? 0}
                   onChange={e => setEditingConfig({ ...editingConfig, body_temp_min: Number(e.target.value) })}
                 />
                 <TextField
-                  label="体温上限"
+                  label="体温上限（℃）"
                   type="number"
                   value={editingConfig.body_temp_max ?? 0}
                   onChange={e => setEditingConfig({ ...editingConfig, body_temp_max: Number(e.target.value) })}
