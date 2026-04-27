@@ -59,9 +59,9 @@ export default function TacticalMap()
               pathOptions={{ color: '#4cae4f', fillColor: '#4CAF50', fillOpacity: 1 }}
             >
               <Tooltip permanent direction="top" offset={[0, -10]}>
-                <Typography variant="caption" fontWeight="bold">我 ({selfTelemetry.name})</Typography>
+                <Typography variant="body2" fontWeight="bold">我 ({selfTelemetry.name})</Typography>
                 <br />
-                <Typography variant="caption">Lat: {selfTelemetry.gps.latitude.toFixed(4)}°, Lon: {selfTelemetry.gps.longitude.toFixed(4)}°</Typography>
+                <Typography variant="body2">Lat: {selfTelemetry.gps.latitude.toFixed(4)}°, Lon: {selfTelemetry.gps.longitude.toFixed(4)}°</Typography>
               </Tooltip>
             </CircleMarker>
           )}
