@@ -56,12 +56,12 @@ export default function TacticalMap()
             <CircleMarker
               center={[selfTelemetry.gps.latitude, selfTelemetry.gps.longitude]}
               radius={8}
-              pathOptions={{ color: '#4CAF50', fillColor: '#4CAF50', fillOpacity: 1 }}
+              pathOptions={{ color: '#4cae4f', fillColor: '#4CAF50', fillOpacity: 1 }}
             >
               <Tooltip permanent direction="top" offset={[0, -10]}>
                 <Typography variant="caption" fontWeight="bold">我 ({selfTelemetry.name})</Typography>
                 <br />
-                <Typography variant="caption">{selfTelemetry.gps.latitude.toFixed(4)}, {selfTelemetry.gps.longitude.toFixed(4)}</Typography>
+                <Typography variant="caption">Lat: {selfTelemetry.gps.latitude.toFixed(4)}°, Lon: {selfTelemetry.gps.longitude.toFixed(4)}°</Typography>
               </Tooltip>
             </CircleMarker>
           )}
@@ -88,7 +88,7 @@ export default function TacticalMap()
                     {t.name} {t.need_help ? '(SOS)' : ''}
                   </Typography>
                   <br />
-                  <Typography variant="caption">{t.gps.latitude.toFixed(4)}, {t.gps.longitude.toFixed(4)}</Typography>
+                  <Typography variant="caption">Lat: {t.gps.latitude.toFixed(4)}°, Lon: {t.gps.longitude.toFixed(4)}°</Typography>
                 </Tooltip>
               </CircleMarker>
             )

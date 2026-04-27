@@ -140,7 +140,7 @@ export default function SOSModal()
     >
       <DialogTitle sx={{ textAlign: 'center' }}>
         <Warning sx={{ fontSize: 100, mb: 2 }} />
-        <Typography variant="h3" fontWeight="bold">紧急求助 SOS</Typography>
+        <Typography variant="h4" fontWeight="bold">紧急求助 SOS</Typography>
       </DialogTitle>
       <DialogContent sx={{ textAlign: 'center', mt: 4, width: '80%', maxWidth: 400 }}>
         <Typography variant="h4" fontWeight="bold" mb={2}>
